@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=3 uid="uid://y2avlqtgpfmq"]
+
+[ext_resource type="AudioStream" uid="uid://cdrxkpdyu80qt" path="res://music/07-Launch-into-the-Sky-FULL-SM466.mp3" id="1_errlg"]
+[ext_resource type="PackedScene" uid="uid://13mopqa4f0hq" path="res://scenes/spectrum.tscn" id="2_bl13t"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_bl13t"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_iyx0m"]
+sky_material = SubResource("ProceduralSkyMaterial_bl13t")
+
+[sub_resource type="Environment" id="Environment_74lek"]
+background_mode = 2
+sky = SubResource("Sky_iyx0m")
+tonemap_mode = 2
+glow_enabled = true
+
+[node name="Node3D" type="Node3D"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_74lek")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("1_errlg")
+autoplay = true
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.9272231, 0.37450948, 0, -0.37450948, 0.9272231, 6.8703175, 1.8669009, 6.5509696)
+
+[node name="Spectrum" parent="." instance=ExtResource("2_bl13t")]
