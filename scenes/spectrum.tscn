@@ -4,3 +4,7 @@
 
 [node name="Spectrum" type="Node3D"]
 script = ExtResource("1_pwr6l")
+max_z_offset = 10.0
+max_jump_distance = 5.0
+smoothness = 1.0
+bar_count = 8

@@ -35,12 +35,23 @@ void fragment(){
 	float l2 = random(igrid2.y);
 	// create just black and white lines
 	l2 = step(0.2, l2);
-	
 	l2 = mix(0.2, 1.0, l2);
 	
+	// Berechne, ob die Fläche nach oben zeigt (Dot-Produkt mit der Y-Achse)
+	float is_facing_up = dot(NORMAL, vec3(0.0, 1.0, 0.0));
+	// Je näher an 1.0, desto mehr zeigt die Fläche nach oben
+	float alpha_up = smoothstep(0.1, 1.0, is_facing_up); // Schwellenwert anpassen
+	
+	
+	// edges 
+	float edge_intensity = pow(screen_fresnel, 2.0);
+	vec3 edge_color = color * 10.0;
+	
+	//vec3 edge_color = vec3(1.0); // would be white
+	edge_color = mix(color, edge_color, edge_intensity);
 	
 	float mixed = screen_noise * screen_fresnel * l1 * l2;
-	ALBEDO = color * mix(_emission, _emission + 5.0, rand_dist);
-	ALPHA = mixed;
+	ALBEDO = mix(color, edge_color,edge_intensity) * mix(_emission, _emission + 5.0, rand_dist);
+	ALPHA = mix(mixed, 1.0, alpha_up);
 
 }

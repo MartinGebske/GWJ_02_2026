@@ -1,8 +1,13 @@
 extends Node3D
 
-const BAR_COUNT: int = 32 # minimum is 8
+
 const FREQ_MAX: float = 11050.0
 const MIN_DB: int = 60
+
+@export var max_z_offset: float = 2.0
+@export var max_jump_distance: float = 3.0
+@export var smoothness: float = 0.5
+@export var bar_count: int = 32 # minimum is 8
 
 var spectrum = AudioEffectSpectrumAnalyzerInstance
 var heights: Array[Height] = []
@@ -10,10 +15,14 @@ var cubes: Array = []
 
 var bar_scene: PackedScene = preload("res://scenes/bar.tscn")
 
+var random: RandomNumberGenerator = RandomNumberGenerator.new()
 
 func _ready() -> void:
+	random.randomize()
+	var previous_z: float = 0.0
+
 	spectrum = AudioServer.get_bus_effect_instance(0, 0)
-	for i in BAR_COUNT:
+	for i in bar_count:
 		heights.append(Height.new())
 
 		var new_bar = bar_scene.instantiate()
@@ -21,8 +30,13 @@ func _ready() -> void:
 		new_bar.scale.x = 3.0
 		new_bar.scale.z = 3.0
 
+		var new_z = calculate_z_position(previous_z, max_z_offset,max_jump_distance, smoothness)
+		new_bar.position.z = new_z
+		previous_z = new_z
+
+
+
 		add_child(new_bar)
-		new_bar.position.z = 0 # Alle auf die selbe Z achse
 		cubes.append(new_bar)
 
 		# Create shader material
@@ -38,8 +52,8 @@ func _process(_delta: float) -> void:
 	display_something()
 
 func display_something() -> void:
-	for i in BAR_COUNT:
-		var hue = float(i) / float(BAR_COUNT - 1)
+	for i in bar_count:
+		var hue = float(i) / float(bar_count - 1)
 		var l_color = Color.from_hsv(hue, 1.0, 1.0)
 
 		cubes[i].scale.y = max(heights[i].actual * 10, 0.01) # TODO: Magic number Setze die Höhe für jeden Cube
@@ -52,8 +66,8 @@ func display_something() -> void:
 
 func _update_spectrum_data() -> void:
 	var l_prev_hz: float = 0.0
-	for i: int in BAR_COUNT:
-		var l_hz: float = (i+1) * FREQ_MAX / BAR_COUNT
+	for i: int in bar_count:
+		var l_hz: float = (i+1) * FREQ_MAX / bar_count
 		var l_magnitude: float = spectrum.get_magnitude_for_frequency_range(l_prev_hz, l_hz).length()
 		var l_energy: float = clampf((MIN_DB + linear_to_db(l_magnitude)) / MIN_DB, 0, 1)
 
@@ -67,7 +81,14 @@ func _on_resized() -> void:
 	pass
 	#bar_width = cube.scale.x / BAR_COUNT # 1000 pro falsch
 
-
+func calculate_z_position(previous_z: float, max_z_offset: float, max_jump_distance: float, smoothness: float) -> float:
+	# Ziel-Z-Position (zufällig)
+	var target_z = randf_range(-max_z_offset, max_z_offset)
+	# Glätte den Übergang mit LERP
+	var new_z = lerp(previous_z, target_z, smoothness)
+	# Begrenze den Abstand zur vorherigen Bar
+	new_z = clamp(new_z, previous_z - max_jump_distance, previous_z + max_jump_distance)
+	return new_z
 
 class Height:
 	var high: float

@@ -12,8 +12,8 @@ shader = ExtResource("1_5dekh")
 shader_parameter/color = Color(0.8819366, 0.8819366, 0.88193655, 1)
 shader_parameter/lines_1 = 110.0
 shader_parameter/lines_2 = 40.0
-shader_parameter/_emission = 6.50000030875
-shader_parameter/_fresnel = 0.150000007125
+shader_parameter/_emission = 4.6510002209225
+shader_parameter/_fresnel = 3.162000150195
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_bwlfd"]
 height = 1.0
