@@ -26,15 +26,13 @@ func _ready() -> void:
 		heights.append(Height.new())
 
 		var new_bar = bar_scene.instantiate()
-		new_bar.position.x = i * 5.0  # Positioniere nebeneinander mit Abstand
+		new_bar.position.x = i * 5.0
 		new_bar.scale.x = 3.0
 		new_bar.scale.z = 3.0
 
 		var new_z = calculate_z_position(previous_z, max_z_offset,max_jump_distance, smoothness)
 		new_bar.position.z = new_z
 		previous_z = new_z
-
-
 
 		add_child(new_bar)
 		cubes.append(new_bar)
@@ -44,8 +42,6 @@ func _ready() -> void:
 		shader_material.shader = preload("res://shaders/hologram.gdshader")
 		var mesh_instance = new_bar.get_node("MeshInstance3D")
 		mesh_instance.material_override = shader_material
-
-
 
 func _process(_delta: float) -> void:
 	_update_spectrum_data()
@@ -82,11 +78,10 @@ func _on_resized() -> void:
 	#bar_width = cube.scale.x / BAR_COUNT # 1000 pro falsch
 
 func calculate_z_position(previous_z: float, max_z_offset: float, max_jump_distance: float, smoothness: float) -> float:
-	# Ziel-Z-Position (zufällig)
 	var target_z = randf_range(-max_z_offset, max_z_offset)
-	# Glätte den Übergang mit LERP
+	# Smooth it out via lerping
 	var new_z = lerp(previous_z, target_z, smoothness)
-	# Begrenze den Abstand zur vorherigen Bar
+	# Way to next bar is clamped:
 	new_z = clamp(new_z, previous_z - max_jump_distance, previous_z + max_jump_distance)
 	return new_z
 

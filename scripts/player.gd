@@ -10,17 +10,29 @@ const SPEED = 5.0
 const JUMP_VELOCITY = 9.0
 
 var _look := Vector2.ZERO
-
+var respawn_position: Vector3 = Vector3.ZERO
+var is_movement_blocked: bool = false
+var movement_block_timer: float = 0.5
+var current_block_time: float = 0.0
 
 @onready var horizontal_pivot: Node3D = $HorizontalPivot
 @onready var vertical_pivot: Node3D = $HorizontalPivot/VerticalPivot
+@onready var deadzone: Area3D = $"../Deadzone"
 
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	respawn_position = position
+	deadzone.player_fell.connect(_on_respawn)
 
 func _physics_process(delta: float) -> void:
 	frame_camera_rotation()
+	if is_movement_blocked:
+		current_block_time -= delta
+		if current_block_time <= 0:
+			is_movement_blocked = false
+		return
+
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
@@ -61,3 +73,9 @@ func frame_camera_rotation() -> void:
 										deg_to_rad(max_boundary)
 										)
 	_look = Vector2.ZERO
+
+func _on_respawn() -> void:
+	position = respawn_position
+	velocity = Vector3.ZERO
+	is_movement_blocked = true
+	current_block_time = movement_block_timer

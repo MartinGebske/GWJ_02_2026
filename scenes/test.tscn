@@ -24,10 +24,10 @@ fog_enabled = true
 fog_light_color = Color(0, 0, 0, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_iyx0m"]
-size = Vector3(2, 2, 10)
+size = Vector3(10, 2, 10)
 
 [sub_resource type="BoxMesh" id="BoxMesh_74lek"]
-size = Vector3(2, 2, 10)
+size = Vector3(10, 2, 10)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_j5jx5"]
 size = Vector3(226.90216, 20.139648, 126.813354)
@@ -48,10 +48,10 @@ autoplay = true
 [node name="Spectrum" parent="." instance=ExtResource("2_bl13t")]
 
 [node name="Player" parent="." instance=ExtResource("3_iyx0m")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -4.5, 8, -2)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -10.371973, 8, -2)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.779386, 5.912494, -1.9355608)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.085783, 5.912494, -1.9355608)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
 shape = SubResource("BoxShape3D_iyx0m")
@@ -62,7 +62,6 @@ mesh = SubResource("BoxMesh_74lek")
 [node name="Deadzone" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.78684, 0, 0)
 script = ExtResource("4_74lek")
-respawn_position = Vector3(-4.5, 8, -2)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Deadzone"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 112.95108, -9.569824, 0.67266846)
