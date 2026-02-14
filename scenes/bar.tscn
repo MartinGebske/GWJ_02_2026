@@ -1,16 +1,28 @@
-[gd_scene load_steps=4 format=3 uid="uid://qgge5xroqoln"]
+[gd_scene load_steps=5 format=3 uid="uid://qgge5xroqoln"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g0fx2"]
+[ext_resource type="Shader" uid="uid://dvorwmx7p2j2o" path="res://shaders/hologram.gdshader" id="1_5dekh"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_g0fx2"]
+[sub_resource type="CylinderMesh" id="CylinderMesh_5dekh"]
+height = 1.0
+radial_segments = 6
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_5dekh"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bwlfd"]
+render_priority = 0
+shader = ExtResource("1_5dekh")
+shader_parameter/color = Color(0.8819366, 0.8819366, 0.88193655, 1)
+shader_parameter/lines_1 = 110.0
+shader_parameter/lines_2 = 40.0
+shader_parameter/_emission = 6.50000030875
+shader_parameter/_fresnel = 0.150000007125
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_bwlfd"]
+height = 1.0
 
 [node name="bar" type="StaticBody3D"]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-material_override = SubResource("StandardMaterial3D_g0fx2")
-mesh = SubResource("BoxMesh_g0fx2")
+mesh = SubResource("CylinderMesh_5dekh")
+surface_material_override/0 = SubResource("ShaderMaterial_bwlfd")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-shape = SubResource("BoxShape3D_5dekh")
+shape = SubResource("CylinderShape3D_bwlfd")

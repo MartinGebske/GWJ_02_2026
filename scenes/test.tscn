@@ -12,15 +12,22 @@ ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
 sky_material = SubResource("ProceduralSkyMaterial_bl13t")
 
 [sub_resource type="Environment" id="Environment_74lek"]
-background_mode = 2
+background_mode = 1
 sky = SubResource("Sky_iyx0m")
 tonemap_mode = 2
 glow_enabled = true
+glow_intensity = 3.6
+glow_strength = 1.23
+glow_bloom = 0.04
+fog_mode = 1
+fog_light_color = Color(0, 0, 0, 1)
+fog_density = 1.0
 
-[node name="Node3D" type="Node3D"]
+[node name="Main" type="Node3D"]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+visible = false
 shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -32,5 +39,5 @@ autoplay = true
 
 [node name="Spectrum" parent="." instance=ExtResource("2_bl13t")]
 
-[node name="CharacterBody3D" parent="." instance=ExtResource("3_iyx0m")]
-transform = Transform3D(1.3113416e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113416e-07, 0, 10.208277, 0)
+[node name="Player" parent="." instance=ExtResource("3_iyx0m")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 3.5470161, 0)

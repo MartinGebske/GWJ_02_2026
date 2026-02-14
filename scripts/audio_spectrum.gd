@@ -10,22 +10,27 @@ var cubes: Array = []
 
 var bar_scene: PackedScene = preload("res://scenes/bar.tscn")
 
-@onready var cube: MeshInstance3D = $cube
-
 
 func _ready() -> void:
 	spectrum = AudioServer.get_bus_effect_instance(0, 0)
 	for i in BAR_COUNT:
 		heights.append(Height.new())
+
 		var new_bar = bar_scene.instantiate()
 		new_bar.position.x = i * 5.0  # Positioniere nebeneinander mit Abstand
-		new_bar.scale.x = 1.5
-		new_bar.scale.z = 1.5
+		new_bar.scale.x = 3.0
+		new_bar.scale.z = 3.0
+
 		add_child(new_bar)
 		new_bar.position.z = 0 # Alle auf die selbe Z achse
 		cubes.append(new_bar)
 
-		cube.queue_free()
+		# Create shader material
+		var shader_material = ShaderMaterial.new()
+		shader_material.shader = preload("res://shaders/hologram.gdshader")
+		var mesh_instance = new_bar.get_node("MeshInstance3D")
+		mesh_instance.material_override = shader_material
+
 
 
 func _process(_delta: float) -> void:
@@ -41,9 +46,8 @@ func display_something() -> void:
 		cubes[i].position.y = cubes[i].scale.y / 2
 
 		var mesh_instance = cubes[i].get_node("MeshInstance3D")
-		var material = StandardMaterial3D.new()
-		material.albedo_color = l_color
-		mesh_instance.material_override = material
+		var material = mesh_instance.material_override
+		material.set_shader_parameter("color", l_color)
 
 
 func _update_spectrum_data() -> void:

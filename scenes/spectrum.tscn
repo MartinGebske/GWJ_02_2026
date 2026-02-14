@@ -1,11 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://13mopqa4f0hq"]
+[gd_scene load_steps=2 format=3 uid="uid://13mopqa4f0hq"]
 
-[ext_resource type="Script" uid="uid://dimomkk1m468o" path="res://audio_spectrum.gd" id="1_pwr6l"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_pwr6l"]
+[ext_resource type="Script" uid="uid://dimomkk1m468o" path="res://scripts/audio_spectrum.gd" id="1_pwr6l"]
 
 [node name="Spectrum" type="Node3D"]
 script = ExtResource("1_pwr6l")
-
-[node name="cube" type="MeshInstance3D" parent="."]
-mesh = SubResource("BoxMesh_pwr6l")
