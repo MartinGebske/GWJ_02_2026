@@ -6,6 +6,8 @@ extends CharacterBody3D
 @export var max_boundary: float = 10.0
 
 
+
+
 const SPEED = 5.0
 const JUMP_VELOCITY = 9.0
 
@@ -15,9 +17,12 @@ var is_movement_blocked: bool = false
 var movement_block_timer: float = 0.5
 var current_block_time: float = 0.0
 
+var is_on_bar = false
+
 @onready var horizontal_pivot: Node3D = $HorizontalPivot
 @onready var vertical_pivot: Node3D = $HorizontalPivot/VerticalPivot
 @onready var deadzone: Area3D = $"../Deadzone"
+@onready var ground_tester: RayCast3D = $GroundTester
 
 
 func _ready() -> void:
@@ -27,6 +32,16 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	frame_camera_rotation()
+	ground_tester.force_raycast_update()
+
+	if ground_tester.is_colliding():
+		var floor_body = ground_tester.get_collider()
+		if floor_body.is_in_group("moving_bar"):
+			is_on_bar = true
+			apply_floor_snap()
+			velocity.y = -5.0
+
+
 	if is_movement_blocked:
 		current_block_time -= delta
 		if current_block_time <= 0:
@@ -39,6 +54,7 @@ func _physics_process(delta: float) -> void:
 
 	# Handle jump.
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
+		is_on_bar = false
 		velocity.y = JUMP_VELOCITY
 
 

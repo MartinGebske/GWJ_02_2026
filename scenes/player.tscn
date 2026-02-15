@@ -31,3 +31,6 @@ target = NodePath("../HorizontalPivot/VerticalPivot")
 [node name="HorizontalPivot" type="Node3D" parent="."]
 
 [node name="VerticalPivot" type="Node3D" parent="HorizontalPivot"]
+
+[node name="GroundTester" type="RayCast3D" parent="."]
+target_position = Vector3(0, -1.2, 0)

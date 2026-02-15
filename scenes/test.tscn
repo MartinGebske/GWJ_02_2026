@@ -59,7 +59,7 @@ autoplay = true
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -10.371973, 8, -2)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.085783, 5.912494, -1.9355608)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.6799946, 5.912494, -1.9355608)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
 shape = SubResource("BoxShape3D_iyx0m")

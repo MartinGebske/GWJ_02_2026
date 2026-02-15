@@ -9,6 +9,8 @@ const MIN_DB: int = 60
 @export var smoothness: float = 0.5
 @export var bar_count: int = 32 # minimum is 8
 
+@export var player_offset = 0.5
+
 var spectrum = AudioEffectSpectrumAnalyzerInstance
 var heights: Array[Height] = []
 var cubes: Array = []
@@ -43,7 +45,7 @@ func _ready() -> void:
 		var mesh_instance = new_bar.get_node("MeshInstance3D")
 		mesh_instance.material_override = shader_material
 
-func _process(_delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	_update_spectrum_data()
 	display_something()
 
@@ -52,8 +54,23 @@ func display_something() -> void:
 		var hue = float(i) / float(bar_count - 1)
 		var l_color = Color.from_hsv(hue, 1.0, 1.0)
 
-		cubes[i].scale.y = max(heights[i].actual * 10, 0.01) # TODO: Magic number Setze die Höhe für jeden Cube
-		cubes[i].position.y = cubes[i].scale.y / 2
+		var height := float(max(heights[i].actual * 10.0, 0.01))
+
+		var bar = cubes[i]
+		var mesh: MeshInstance3D = bar.get_node("MeshInstance3D")
+		var collision: CollisionShape3D = bar.get_node("CollisionShape3D")
+
+		bar.scale = Vector3(3.0, 2.0, 3.0) # Y immer 1 lassen!
+
+		mesh.scale.y = height
+		#mesh.scale.y = lerp(mesh.scale.y, height, 0.3)
+
+		collision.position.y = height / 2.0 - player_offset
+		#collision.position.y = mesh.scale.y / 2.0 - player_offset
+
+		bar.position.y = 0.0
+
+
 
 		var mesh_instance = cubes[i].get_node("MeshInstance3D")
 		var material = mesh_instance.material_override
