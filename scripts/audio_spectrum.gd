@@ -70,8 +70,6 @@ func display_something() -> void:
 
 		bar.position.y = 0.0
 
-
-
 		var mesh_instance = cubes[i].get_node("MeshInstance3D")
 		var material = mesh_instance.material_override
 		material.set_shader_parameter("color", l_color)
@@ -90,9 +88,6 @@ func _update_spectrum_data() -> void:
 
 		l_prev_hz = l_hz
 
-func _on_resized() -> void:
-	pass
-	#bar_width = cube.scale.x / BAR_COUNT # 1000 pro falsch
 
 func calculate_z_position(previous_z: float, max_z_offset: float, max_jump_distance: float, smoothness: float) -> float:
 	var target_z = randf_range(-max_z_offset, max_z_offset)

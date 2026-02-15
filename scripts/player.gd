@@ -5,11 +5,8 @@ extends CharacterBody3D
 @export var min_boundary: float = -60.0
 @export var max_boundary: float = 10.0
 
-
-
-
 const SPEED = 5.0
-const JUMP_VELOCITY = 9.0
+const JUMP_VELOCITY = 6.0
 
 var _look := Vector2.ZERO
 var respawn_position: Vector3 = Vector3.ZERO
@@ -36,11 +33,12 @@ func _physics_process(delta: float) -> void:
 
 	if ground_tester.is_colliding():
 		var floor_body = ground_tester.get_collider()
-		if floor_body.is_in_group("moving_bar"):
+		if floor_body.is_in_group("moving_bar") and velocity.y <= 0.0:
 			is_on_bar = true
 			apply_floor_snap()
 			velocity.y = -5.0
-
+		else:
+			is_on_bar = false
 
 	if is_movement_blocked:
 		current_block_time -= delta
@@ -51,12 +49,14 @@ func _physics_process(delta: float) -> void:
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
+	else:
+		floor_snap_length = 0.5
 
 	# Handle jump.
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
 		is_on_bar = false
+		floor_snap_length = 0.0
 		velocity.y = JUMP_VELOCITY
-
 
 	var direction := get_movement_direction()
 	if direction:
