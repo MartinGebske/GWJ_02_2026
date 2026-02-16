@@ -13,7 +13,7 @@ const MIN_DB: int = 60
 var spectrum = AudioEffectSpectrumAnalyzerInstance
 var heights: Array[Height] = []
 var bars: Array = []
-
+var fade_values: Array[float] = []
 var bar_scene: PackedScene = preload("res://scenes/bar.tscn")
 
 @onready var color_palette: BarColorPalette = $"../ColorPalette"
@@ -35,6 +35,7 @@ func create_bars(count: int) -> void:
 		heights.append(Height.new())
 
 		var bar: Node3D = bar_scene.instantiate()
+		fade_values.append(1.0)
 		bar.position.x = i * 5.0
 		bar.scale = Vector3(3.0, 2.0, 3.0)
 
@@ -69,7 +70,13 @@ func display_something() -> void:
 
 		data.mesh.scale.y = height
 		data.collision.position.y = height / 2.0 - player_offset
-		data.material.set_shader_parameter("color", color)
+
+		#data.material.set_shader_parameter("color", color)
+		var material: ShaderMaterial = data.material # oder dein aktueller Zugriff
+		var beat = heights[i].actual
+
+		material.set_shader_parameter("color", color)
+		material.set_shader_parameter("beat_strength", beat)
 
 
 func _update_spectrum_data() -> void:
@@ -79,19 +86,22 @@ func _update_spectrum_data() -> void:
 		var l_magnitude: float = spectrum.get_magnitude_for_frequency_range(l_prev_hz, l_hz).length()
 		var l_energy: float = clampf((MIN_DB + linear_to_db(l_magnitude)) / MIN_DB, 0, 1)
 
+		heights[i].actual += randf_range(-1.0, 1.0)
+		heights[i].actual = clamp(heights[i].actual, 0, 1)
+
 		heights[i].high = max(heights[i].high, l_energy)
 		heights[i].low = lerp(heights[i].low, l_energy, 0.1)
-		heights[i].actual = lerp(heights[i].low, heights[i].high, 0.1)
+		heights[i].actual = lerp(heights[i].low, heights[i].high, 0.001)
 
 		l_prev_hz = l_hz
 
 
-func calculate_z_position(previous_z: float, max_z_offset: float, max_jump_distance: float, smoothness: float) -> float:
-	var target_z = randf_range(-max_z_offset, max_z_offset)
+func calculate_z_position(_previous_z: float, _max_z_offset: float, _max_jump_distance: float, _smoothness: float) -> float:
+	var target_z = randf_range(-_max_z_offset, _max_z_offset)
 	# Smooth it out via lerping
-	var new_z = lerp(previous_z, target_z, smoothness)
+	var new_z = lerp(_previous_z, target_z, _smoothness)
 	# Way to next bar is clamped:
-	new_z = clamp(new_z, previous_z - max_jump_distance, previous_z + max_jump_distance)
+	new_z = clamp(new_z, _previous_z - _max_jump_distance, _previous_z + _max_jump_distance)
 	return new_z
 
 class Height:

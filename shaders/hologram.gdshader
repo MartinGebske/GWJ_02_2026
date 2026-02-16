@@ -1,57 +1,65 @@
 shader_type spatial;
-render_mode unshaded, shadows_disabled, world_vertex_coords;
-#include "res://scenes/funcs.gdshaderinc"
+render_mode unshaded, shadows_disabled;
 
-uniform vec3 color: source_color;
-uniform float lines_1: hint_range(0.0, 200.0, 1.0) = 2.0;
-uniform float lines_2: hint_range(0.0, 100.0, 1.0) = 2.0;
-uniform float _emission: hint_range(0.0, 10.0) = 1.0;
-uniform float _fresnel: hint_range(0.0, 10.0) = 1.0;
+uniform vec3 color : source_color = vec3(1.0, 0.0, 1.0);
+uniform float emission_strength : hint_range(0.0, 10.0) = 4.5;
+uniform float fresnel_power : hint_range(0.1, 10.0) = 4.0;
+uniform float gradient_strength : hint_range(0.0, 3.0) = 1.3;
+uniform float edge_intensity : hint_range(0.0, 10.0) = 6.0;
+uniform float top_edge_whiteness : hint_range(0.0, 1.0) = 0.9;
+uniform float side_opacity : hint_range(0.0, 1.0) = 0.8;
+uniform float top_opacity : hint_range(0.0, 1.0) = 1.0;
 
-varying float rand_dist;
+uniform float beat_strength : hint_range(0.0, 2.0) = 0.0;
+uniform float alpha_fade : hint_range(0.0, 1.0) = 1.0;
 
-void vertex(){
-	float distortion = sin(TIME* 10.0 * VERTEX.y * 30.0) * 0.04;
-	float rand_time = random(TIME);
-	rand_dist = step(rand_time,0.05);
-	VERTEX.x += distortion * rand_dist;
+varying float height_mask;
+varying float top_mask_v;
+
+void vertex() {
+	// Height gradient
+	height_mask = clamp(VERTEX.y, 0.0, 1.0);
+
+	// This is the HEX top
+	top_mask_v = dot(NORMAL, vec3(0.0, 1.0, 0.0));
 }
 
-void fragment(){
-	// this produces random noise evenly distributed without a UV from a model from include
-	float screen_noise = random2_1(SCREEN_UV);
-	// this is the fresnel from the include
-	float screen_fresnel = fresnel(_fresnel, NORMAL, VIEW);
-	
-	// -- add even lines
-	vec2 igrid = floor(SCREEN_UV * lines_1) / lines_1;
-	float l1 = mod(igrid.y,2.0);
-	l1 = mix(0.4, 1.0, l1);
-	
-	// -- random lines
-	vec2 uv2 = SCREEN_UV;
-	uv2.y -= TIME * 0.06;
-	vec2 igrid2 = floor(uv2 * lines_2);
-	float l2 = random(igrid2.y);
-	// create just black and white lines
-	l2 = step(0.2, l2);
-	l2 = mix(0.2, 1.0, l2);
-	
-	// Berechne, ob die Fläche nach oben zeigt (Dot-Produkt mit der Y-Achse)
-	float is_facing_up = dot(NORMAL, vec3(0.0, 1.0, 0.0));
-	// Je näher an 1.0, desto mehr zeigt die Fläche nach oben
-	float alpha_up = smoothstep(0.1, 1.0, is_facing_up); // Schwellenwert anpassen
-	
-	
-	// edges 
-	float edge_intensity = pow(screen_fresnel, 2.0);
-	vec3 edge_color = color * 10.0;
-	
-	//vec3 edge_color = vec3(1.0); // would be white
-	edge_color = mix(color, edge_color, edge_intensity);
-	
-	float mixed = screen_noise * screen_fresnel * l1 * l2;
-	ALBEDO = mix(color, edge_color,edge_intensity) * mix(_emission, _emission + 5.0, rand_dist);
-	ALPHA = mix(mixed, 1.0, alpha_up);
+void fragment() {
+	// === BASE SYNTHWAVE GRADIENT ===
+	vec3 dark = color * 0.2;
+	vec3 bright = color * (1.0 + gradient_strength + beat_strength);
+	vec3 gradient_color = mix(dark, bright, height_mask);
 
+	// === SIDE FRESNEL GLOW (Synthwave Rim) ===
+	float fresnel = pow(1.0 - dot(NORMAL, VIEW), fresnel_power);
+	vec3 rim_color = gradient_color * (1.0 + fresnel * 2.5);
+
+	// === TOP SURFACE DETECTION ===
+	float top_surface = smoothstep(0.6, 1.0, top_mask_v);
+
+	// Top bekommt extra Helligkeit auf Beat
+	vec3 top_boost = gradient_color * (1.0 + beat_strength * 2.0) * top_surface;
+
+
+	// === SEPARATE FADE CONTROL (für Auflösen!) ===
+	float alpha_base = mix(side_opacity, top_opacity, top_surface);
+	float final_alpha = alpha_base * alpha_fade;
+
+	// Weißer Edge Glow auf der Oberseite
+	vec3 white_edge = mix(color * edge_intensity, vec3(1.0) * edge_intensity, top_edge_whiteness);
+
+	// Kombiniere: Seiten-Rim + Top-Edge Glow
+	vec3 final_color = rim_color + white_edge * top_boost;
+	
+	// === AUDIO REACTIVE EMISSION ===
+	float reactive_emission = emission_strength + (beat_strength * 15.0);
+	vec3 emission = final_color * reactive_emission;
+
+
+	// === OPAQUE TOP (für Jumping Gameplay) ===
+	float alpha = mix(side_opacity, top_opacity, top_surface);
+
+	ALBEDO = final_color;
+	EMISSION = emission;
+	ALPHA = final_alpha;
 }

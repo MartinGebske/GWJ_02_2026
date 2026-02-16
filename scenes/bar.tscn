@@ -9,11 +9,16 @@ radial_segments = 6
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_bwlfd"]
 render_priority = 0
 shader = ExtResource("1_5dekh")
-shader_parameter/color = Color(0.8819366, 0.8819366, 0.88193655, 1)
-shader_parameter/lines_1 = 110.0
-shader_parameter/lines_2 = 40.0
-shader_parameter/_emission = 4.6510002209225
-shader_parameter/_fresnel = 3.162000150195
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/emission_strength = 4.202000199595
+shader_parameter/fresnel_power = 0.10000000149012
+shader_parameter/gradient_strength = 0.594000028215
+shader_parameter/edge_intensity = 0.370000017575
+shader_parameter/top_edge_whiteness = 0.1770000084075
+shader_parameter/side_opacity = 0.010000000475
+shader_parameter/top_opacity = 0.32800001558
+shader_parameter/beat_strength = 0.0
+shader_parameter/alpha_fade = 1.0
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_bwlfd"]
 height = 1.0

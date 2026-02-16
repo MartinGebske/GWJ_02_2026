@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3 uid="uid://jtas3rrtanmw"]
+
+[ext_resource type="Script" uid="uid://nb18651bihyd" path="res://scripts/deadzone.gd" id="1_t3cga"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_j5jx5"]
+size = Vector3(226.90216, 20.139648, 126.813354)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_t3cga"]
+albedo_color = Color(0, 0, 0, 1)
+proximity_fade_enabled = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_xxx3g"]
+material = SubResource("StandardMaterial3D_t3cga")
+size = Vector3(250, 20, 150)
+
+[node name="Deadzone" type="Area3D"]
+script = ExtResource("1_t3cga")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 112.95108, -24.01801, 0.67266846)
+shape = SubResource("BoxShape3D_j5jx5")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 112.95108, -24.01801, 0.67266846)
+visible = false
+mesh = SubResource("BoxMesh_xxx3g")
