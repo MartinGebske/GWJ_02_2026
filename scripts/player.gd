@@ -5,13 +5,15 @@ extends CharacterBody3D
 @export var max_boundary: float = 10.0
 
 const SPEED = 5.0
-const JUMP_VELOCITY = 6.0
+const JUMP_VELOCITY = 10.0
+
 
 var _look := Vector2.ZERO
 var respawn_position: Vector3 = Vector3.ZERO
 var is_movement_blocked: bool = false
 var movement_block_timer: float = 0.5
 var current_block_time: float = 0.0
+var touched_first_bar = false
 
 var is_on_bar = false
 
@@ -20,6 +22,7 @@ var is_on_bar = false
 @onready var deadzone: Area3D = $"../Deadzone"
 @onready var ground_tester: RayCast3D = $GroundTester
 
+signal game_start
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -34,6 +37,9 @@ func _physics_process(delta: float) -> void:
 		var floor_body = ground_tester.get_collider()
 		if floor_body.is_in_group("moving_bar") and velocity.y <= 0.0:
 			is_on_bar = true
+			if not touched_first_bar:
+				touched_first_bar = true
+				game_start.emit()
 			apply_floor_snap()
 			velocity.y = -5.0
 		else:
@@ -47,7 +53,7 @@ func _physics_process(delta: float) -> void:
 
 	# Add the gravity.
 	if not is_on_floor():
-		velocity += get_gravity() * delta
+		velocity += (get_gravity() * 2.0) * delta
 	else:
 		floor_snap_length = 0.5
 
@@ -94,3 +100,4 @@ func _on_respawn() -> void:
 	velocity = Vector3.ZERO
 	is_movement_blocked = true
 	current_block_time = movement_block_timer
+	touched_first_bar = false

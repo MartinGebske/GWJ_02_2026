@@ -1,6 +1,6 @@
 extends Area3D
 
-signal player_fell()
+signal player_fell
 
 func _ready() -> void:
 	connect("body_entered", _on_body_entered)

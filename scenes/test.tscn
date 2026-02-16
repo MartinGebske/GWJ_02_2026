@@ -1,11 +1,15 @@
-[gd_scene load_steps=12 format=3 uid="uid://y2avlqtgpfmq"]
+[gd_scene load_steps=16 format=3 uid="uid://y2avlqtgpfmq"]
 
 [ext_resource type="AudioStream" uid="uid://cbtvrk3xgdvw0" path="res://music/22-Electronic-Bliss-FULL-SM454.mp3" id="1_lpvoh"]
 [ext_resource type="PackedScene" uid="uid://13mopqa4f0hq" path="res://scenes/spectrum.tscn" id="2_bl13t"]
 [ext_resource type="PackedScene" uid="uid://c6uu5dw7ulf0p" path="res://scenes/player.tscn" id="3_iyx0m"]
 [ext_resource type="PackedScene" uid="uid://jtas3rrtanmw" path="res://scenes/deadzone.tscn" id="4_lpvoh"]
-[ext_resource type="PackedScene" uid="uid://qgge5xroqoln" path="res://scenes/bar.tscn" id="5_j5jx5"]
 [ext_resource type="Script" uid="uid://v2emx3ulh1g7" path="res://scripts/color_palette.gd" id="6_lpvoh"]
+[ext_resource type="Script" uid="uid://dos3qhffr4v0a" path="res://rhythm_notifier/rhythm_notifier.gd" id="7_at5dv"]
+[ext_resource type="AudioStream" uid="uid://cu56fyf8y7y5g" path="res://music/Brick-Wall-HRK024501.mp3" id="8_ajshl"]
+[ext_resource type="Script" uid="uid://dysjw7o844sko" path="res://scripts/rhythm.gd" id="8_jcd4p"]
+[ext_resource type="AudioStream" uid="uid://d0jkuqqors2i7" path="res://music/Metal-Death-ORJ014301.mp3" id="9_ghpyy"]
+[ext_resource type="AudioStream" uid="uid://dxx0tkolq8rii" path="res://music/Upswing-DNT012901.mp3" id="10_44saj"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_bl13t"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -47,18 +51,15 @@ shadow_enabled = true
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_74lek")
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("1_lpvoh")
-autoplay = true
-
 [node name="Spectrum" parent="." instance=ExtResource("2_bl13t")]
+smoothness = 2.0
 bar_count = 16
 
 [node name="Player" parent="." instance=ExtResource("3_iyx0m")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -10.371973, 8, -2)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -10.371973, 7.5262623, -2)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.6799946, 5.912494, -1.9355608)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.6799946, 5.438757, -1.9355608)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
 shape = SubResource("BoxShape3D_iyx0m")
@@ -67,11 +68,27 @@ shape = SubResource("BoxShape3D_iyx0m")
 mesh = SubResource("BoxMesh_74lek")
 
 [node name="Deadzone" parent="." instance=ExtResource("4_lpvoh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.78684, 3.6321583, 0)
-
-[node name="bar" parent="." instance=ExtResource("5_j5jx5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10.083185, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.78684, 7.572571, 0)
 
 [node name="ColorPalette" type="Node" parent="."]
 script = ExtResource("6_lpvoh")
-palette_type = 4
+palette_type = 2
+
+[node name="Music" type="Node" parent="."]
+script = ExtResource("8_jcd4p")
+tracks = Array[AudioStream]([ExtResource("1_lpvoh"), ExtResource("8_ajshl"), ExtResource("9_ghpyy"), ExtResource("10_44saj")])
+
+[node name="RhythmNotifier" type="Node" parent="Music" node_paths=PackedStringArray("audio_stream_player")]
+script = ExtResource("7_at5dv")
+bpm = 130.0
+beat_length = 0.46153846153846156
+audio_stream_player = NodePath("../AudioStreamPlayer")
+metadata/_custom_type_script = "uid://dos3qhffr4v0a"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Music"]
+stream = ExtResource("1_lpvoh")
+autoplay = true
+
+[connection signal="game_start" from="Player" to="Spectrum" method="_on_player_game_start"]
+[connection signal="player_fell" from="Deadzone" to="Spectrum" method="_on_deadzone_player_fell"]
+[connection signal="beat" from="Music/RhythmNotifier" to="Spectrum" method="_on_rhythm_notifier_beat"]

@@ -59,7 +59,9 @@ void fragment() {
 	// === OPAQUE TOP (für Jumping Gameplay) ===
 	float alpha = mix(side_opacity, top_opacity, top_surface);
 
+
+
 	ALBEDO = final_color;
+	ALPHA = alpha_fade;
 	EMISSION = emission;
-	ALPHA = final_alpha;
 }
