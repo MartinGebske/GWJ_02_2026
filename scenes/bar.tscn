@@ -10,13 +10,13 @@ radial_segments = 6
 render_priority = 0
 shader = ExtResource("1_5dekh")
 shader_parameter/color = Color(1, 1, 1, 1)
-shader_parameter/emission_strength = 4.202000199595
+shader_parameter/emission_strength = 2.9410001396975
 shader_parameter/fresnel_power = 0.10000000149012
-shader_parameter/gradient_strength = 0.594000028215
+shader_parameter/gradient_strength = 0.9470000449825
 shader_parameter/edge_intensity = 0.370000017575
-shader_parameter/top_edge_whiteness = 0.1770000084075
+shader_parameter/top_edge_whiteness = 0.0170000008075
 shader_parameter/side_opacity = 0.010000000475
-shader_parameter/top_opacity = 0.32800001558
+shader_parameter/top_opacity = 0.0
 shader_parameter/beat_strength = 0.0
 shader_parameter/alpha_fade = 1.0
 

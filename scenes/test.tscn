@@ -1,7 +1,8 @@
-[gd_scene load_steps=16 format=3 uid="uid://y2avlqtgpfmq"]
+[gd_scene load_steps=15 format=3 uid="uid://y2avlqtgpfmq"]
 
 [ext_resource type="AudioStream" uid="uid://cbtvrk3xgdvw0" path="res://music/22-Electronic-Bliss-FULL-SM454.mp3" id="1_lpvoh"]
 [ext_resource type="PackedScene" uid="uid://13mopqa4f0hq" path="res://scenes/spectrum.tscn" id="2_bl13t"]
+[ext_resource type="PackedScene" uid="uid://4t8bplry4qev" path="res://scenes/platform.tscn" id="3_ajshl"]
 [ext_resource type="PackedScene" uid="uid://c6uu5dw7ulf0p" path="res://scenes/player.tscn" id="3_iyx0m"]
 [ext_resource type="PackedScene" uid="uid://jtas3rrtanmw" path="res://scenes/deadzone.tscn" id="4_lpvoh"]
 [ext_resource type="Script" uid="uid://v2emx3ulh1g7" path="res://scripts/color_palette.gd" id="6_lpvoh"]
@@ -36,12 +37,6 @@ fog_light_color = Color(0, 0, 0, 1)
 volumetric_fog_density = 0.193
 volumetric_fog_albedo = Color(0.00184107, 0.0018410678, 0.0018410678, 1)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_iyx0m"]
-size = Vector3(10, 2, 10)
-
-[sub_resource type="BoxMesh" id="BoxMesh_74lek"]
-size = Vector3(10, 2, 10)
-
 [node name="Main" type="Node3D"]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
@@ -52,30 +47,26 @@ shadow_enabled = true
 environment = SubResource("Environment_74lek")
 
 [node name="Spectrum" parent="." instance=ExtResource("2_bl13t")]
-smoothness = 2.0
-bar_count = 16
+bar_count = 32
+fade_lerp_speed = 8.0
+goal_scene = ExtResource("3_ajshl")
 
 [node name="Player" parent="." instance=ExtResource("3_iyx0m")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -10.371973, 7.5262623, -2)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -7.6056614, 7.5262623, -2.115263)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="."]
+[node name="Platform" parent="." instance=ExtResource("3_ajshl")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.6799946, 5.438757, -1.9355608)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
-shape = SubResource("BoxShape3D_iyx0m")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
-mesh = SubResource("BoxMesh_74lek")
 
 [node name="Deadzone" parent="." instance=ExtResource("4_lpvoh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.78684, 7.572571, 0)
 
 [node name="ColorPalette" type="Node" parent="."]
 script = ExtResource("6_lpvoh")
-palette_type = 2
+palette_type = 4
 
 [node name="Music" type="Node" parent="."]
 script = ExtResource("8_jcd4p")
+selected_tack = 3
 tracks = Array[AudioStream]([ExtResource("1_lpvoh"), ExtResource("8_ajshl"), ExtResource("9_ghpyy"), ExtResource("10_44saj")])
 
 [node name="RhythmNotifier" type="Node" parent="Music" node_paths=PackedStringArray("audio_stream_player")]

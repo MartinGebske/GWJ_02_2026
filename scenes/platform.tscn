@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://4t8bplry4qev"]
+
+[ext_resource type="Shader" uid="uid://dvorwmx7p2j2o" path="res://shaders/hologram.gdshader" id="1_ba0x2"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_iyx0m"]
+size = Vector3(10, 2, 10)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nlgqw"]
+render_priority = 0
+shader = ExtResource("1_ba0x2")
+shader_parameter/color = Color(0.049194515, 0.5126597, 0.7358819, 1)
+shader_parameter/emission_strength = 4.5
+shader_parameter/fresnel_power = 4.0
+shader_parameter/gradient_strength = 1.3
+shader_parameter/edge_intensity = 6.0
+shader_parameter/top_edge_whiteness = 0.9
+shader_parameter/side_opacity = 0.8
+shader_parameter/top_opacity = 1.0
+shader_parameter/beat_strength = 0.0
+shader_parameter/alpha_fade = 1.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_74lek"]
+material = SubResource("ShaderMaterial_nlgqw")
+size = Vector3(10, 2, 10)
+
+[node name="Platform" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_iyx0m")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_74lek")
