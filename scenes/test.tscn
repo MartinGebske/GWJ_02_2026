@@ -1,10 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://y2avlqtgpfmq"]
+[gd_scene load_steps=13 format=3 uid="uid://y2avlqtgpfmq"]
 
-[ext_resource type="AudioStream" uid="uid://cdrxkpdyu80qt" path="res://music/07-Launch-into-the-Sky-FULL-SM466.mp3" id="1_errlg"]
+[ext_resource type="AudioStream" uid="uid://cbtvrk3xgdvw0" path="res://music/22-Electronic-Bliss-FULL-SM454.mp3" id="1_lpvoh"]
 [ext_resource type="PackedScene" uid="uid://13mopqa4f0hq" path="res://scenes/spectrum.tscn" id="2_bl13t"]
 [ext_resource type="PackedScene" uid="uid://c6uu5dw7ulf0p" path="res://scenes/player.tscn" id="3_iyx0m"]
 [ext_resource type="Script" uid="uid://nb18651bihyd" path="res://scripts/deadzone.gd" id="4_74lek"]
 [ext_resource type="PackedScene" uid="uid://qgge5xroqoln" path="res://scenes/bar.tscn" id="5_j5jx5"]
+[ext_resource type="Script" uid="uid://v2emx3ulh1g7" path="res://scripts/color_palette.gd" id="6_lpvoh"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_bl13t"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -50,10 +51,11 @@ shadow_enabled = true
 environment = SubResource("Environment_74lek")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("1_errlg")
+stream = ExtResource("1_lpvoh")
 autoplay = true
 
 [node name="Spectrum" parent="." instance=ExtResource("2_bl13t")]
+bar_count = 16
 
 [node name="Player" parent="." instance=ExtResource("3_iyx0m")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -10.371973, 8, -2)
@@ -78,3 +80,7 @@ shape = SubResource("BoxShape3D_j5jx5")
 [node name="bar" parent="." instance=ExtResource("5_j5jx5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10.083185, 0)
 visible = false
+
+[node name="ColorPalette" type="Node" parent="."]
+script = ExtResource("6_lpvoh")
+palette_type = 5

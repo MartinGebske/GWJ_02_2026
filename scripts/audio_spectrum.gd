@@ -1,6 +1,5 @@
 extends Node3D
 
-
 const FREQ_MAX: float = 11050.0
 const MIN_DB: int = 60
 
@@ -13,66 +12,64 @@ const MIN_DB: int = 60
 
 var spectrum = AudioEffectSpectrumAnalyzerInstance
 var heights: Array[Height] = []
-var cubes: Array = []
+var bars: Array = []
 
 var bar_scene: PackedScene = preload("res://scenes/bar.tscn")
 
-var random: RandomNumberGenerator = RandomNumberGenerator.new()
+@onready var color_palette: BarColorPalette = $"../ColorPalette"
+
 
 func _ready() -> void:
-	random.randomize()
-	var previous_z: float = 0.0
-
 	spectrum = AudioServer.get_bus_effect_instance(0, 0)
-	for i in bar_count:
-		heights.append(Height.new())
+	create_bars(bar_count)
 
-		var new_bar = bar_scene.instantiate()
-		new_bar.position.x = i * 5.0
-		new_bar.scale.x = 3.0
-		new_bar.scale.z = 3.0
-
-		var new_z = calculate_z_position(previous_z, max_z_offset,max_jump_distance, smoothness)
-		new_bar.position.z = new_z
-		previous_z = new_z
-
-		add_child(new_bar)
-		cubes.append(new_bar)
-
-		# Create shader material
-		var shader_material = ShaderMaterial.new()
-		shader_material.shader = preload("res://shaders/hologram.gdshader")
-		var mesh_instance = new_bar.get_node("MeshInstance3D")
-		mesh_instance.material_override = shader_material
 
 func _physics_process(_delta: float) -> void:
 	_update_spectrum_data()
 	display_something()
 
-func display_something() -> void:
-	for i in bar_count:
-		var hue = float(i) / float(bar_count - 1)
-		var l_color = Color.from_hsv(hue, 1.0, 1.0)
+func create_bars(count: int) -> void:
+	var previous_z: float = 0.0
 
-		var height := float(max(heights[i].actual * 10.0, 0.01))
+	for i in range(count):
+		heights.append(Height.new())
 
-		var bar = cubes[i]
+		var bar: Node3D = bar_scene.instantiate()
+		bar.position.x = i * 5.0
+		bar.scale = Vector3(3.0, 2.0, 3.0)
+
+		var new_z = calculate_z_position(previous_z, max_z_offset, max_jump_distance, smoothness)
+		bar.position.z = new_z
+		previous_z = new_z
+
+		add_child(bar)
+
+		# Cache nodes ONCE
 		var mesh: MeshInstance3D = bar.get_node("MeshInstance3D")
 		var collision: CollisionShape3D = bar.get_node("CollisionShape3D")
 
-		bar.scale = Vector3(3.0, 2.0, 3.0) # Y immer 1 lassen!
+		var shader_material := ShaderMaterial.new()
+		shader_material.shader = preload("res://shaders/hologram.gdshader")
+		mesh.material_override = shader_material
 
-		mesh.scale.y = height
-		#mesh.scale.y = lerp(mesh.scale.y, height, 0.3)
+		bars.append({
+			"bar": bar,
+			"mesh": mesh,
+			"collision": collision,
+			"material": shader_material
+		})
 
-		collision.position.y = height / 2.0 - player_offset
-		#collision.position.y = mesh.scale.y / 2.0 - player_offset
 
-		bar.position.y = 0.0
+func display_something() -> void:
+	for i in range(bar_count):
+		var data = bars[i]
 
-		var mesh_instance = cubes[i].get_node("MeshInstance3D")
-		var material = mesh_instance.material_override
-		material.set_shader_parameter("color", l_color)
+		var height := float(max(heights[i].actual * 10.0, 0.01))
+		var color = color_palette.get_color(i, bar_count)
+
+		data.mesh.scale.y = height
+		data.collision.position.y = height / 2.0 - player_offset
+		data.material.set_shader_parameter("color", color)
 
 
 func _update_spectrum_data() -> void:

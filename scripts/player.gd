@@ -1,6 +1,5 @@
 extends CharacterBody3D
 
-
 @export var mouse_sensitivity: float = 0.00075
 @export var min_boundary: float = -60.0
 @export var max_boundary: float = 10.0
