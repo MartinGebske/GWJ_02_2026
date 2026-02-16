@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode unshaded, shadows_disabled;
+render_mode unshaded, shadows_disabled, blend_mix;
 
 uniform vec3 color : source_color = vec3(1.0, 0.0, 1.0);
 uniform float emission_strength : hint_range(0.0, 10.0) = 4.5;
@@ -9,6 +9,8 @@ uniform float edge_intensity : hint_range(0.0, 10.0) = 6.0;
 uniform float top_edge_whiteness : hint_range(0.0, 1.0) = 0.9;
 uniform float side_opacity : hint_range(0.0, 1.0) = 0.8;
 uniform float top_opacity : hint_range(0.0, 1.0) = 1.0;
+uniform float bottom_fade_height : hint_range(0.0, 1.0) = 0.45;
+uniform float bottom_fade_softness : hint_range(0.01, 0.5) = 0.2;
 
 uniform float beat_strength : hint_range(0.0, 2.0) = 0.0;
 uniform float alpha_fade : hint_range(0.0, 1.0) = 1.0;
@@ -40,10 +42,22 @@ void fragment() {
 	// Top bekommt extra Helligkeit auf Beat
 	vec3 top_boost = gradient_color * (1.0 + beat_strength * 2.0) * top_surface;
 
+	// === BOTTOM DARK FADE ===
+	// 0 unten → 1 oben (weicher Nebel/Dunkel-Fade)
+	float bottom_fade = smoothstep(
+		bottom_fade_height - bottom_fade_softness,
+		bottom_fade_height,
+		height_mask
+	);
 
-	// === SEPARATE FADE CONTROL (für Auflösen!) ===
+
+	// === SEPARATE FADE CONTROL (Gameplay Fade) ===
 	float alpha_base = mix(side_opacity, top_opacity, top_surface);
-	float final_alpha = alpha_base * alpha_fade;
+
+	// Kombiniert:
+	// - Bottom darkness fade
+	// - Beat/game fade system
+	float final_alpha = alpha_base * alpha_fade * bottom_fade;
 
 	// Weißer Edge Glow auf der Oberseite
 	vec3 white_edge = mix(color * edge_intensity, vec3(1.0) * edge_intensity, top_edge_whiteness);
@@ -55,13 +69,7 @@ void fragment() {
 	float reactive_emission = emission_strength + (beat_strength * 15.0);
 	vec3 emission = final_color * reactive_emission;
 
-
-	// === OPAQUE TOP (für Jumping Gameplay) ===
-	float alpha = mix(side_opacity, top_opacity, top_surface);
-
-
-
 	ALBEDO = final_color;
-	ALPHA = alpha_fade;
+	ALPHA = final_alpha; // WICHTIG: nicht mehr nur alpha_fade!
 	EMISSION = emission;
 }

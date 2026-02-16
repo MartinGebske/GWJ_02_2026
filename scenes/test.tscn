@@ -47,7 +47,6 @@ shadow_enabled = true
 environment = SubResource("Environment_74lek")
 
 [node name="Spectrum" parent="." instance=ExtResource("2_bl13t")]
-bar_count = 32
 fade_lerp_speed = 8.0
 goal_scene = ExtResource("3_ajshl")
 
@@ -62,11 +61,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.78684, 7.572571, 0)
 
 [node name="ColorPalette" type="Node" parent="."]
 script = ExtResource("6_lpvoh")
-palette_type = 4
+palette_type = 2
 
 [node name="Music" type="Node" parent="."]
 script = ExtResource("8_jcd4p")
-selected_tack = 3
 tracks = Array[AudioStream]([ExtResource("1_lpvoh"), ExtResource("8_ajshl"), ExtResource("9_ghpyy"), ExtResource("10_44saj")])
 
 [node name="RhythmNotifier" type="Node" parent="Music" node_paths=PackedStringArray("audio_stream_player")]
