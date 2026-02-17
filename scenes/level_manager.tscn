@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://lfyqbwdjie1v"]
+
+[ext_resource type="Script" uid="uid://c24ful88y1k1r" path="res://scenes/level_manager.gd" id="1_06fa7"]
+
+[node name="LevelManager" type="Node"]
+script = ExtResource("1_06fa7")

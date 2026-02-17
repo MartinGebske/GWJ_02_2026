@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://qgge5xroqoln"]
+[gd_scene load_steps=6 format=3 uid="uid://qgge5xroqoln"]
 
 [ext_resource type="Shader" uid="uid://dvorwmx7p2j2o" path="res://shaders/hologram.gdshader" id="1_5dekh"]
 
@@ -6,8 +6,11 @@
 height = 1.0
 radial_segments = 6
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_x848m"]
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_bwlfd"]
 render_priority = 0
+next_pass = SubResource("ShaderMaterial_x848m")
 shader = ExtResource("1_5dekh")
 shader_parameter/color = Color(1, 1, 1, 1)
 shader_parameter/emission_strength = 2.9410001396975
@@ -17,6 +20,8 @@ shader_parameter/edge_intensity = 0.370000017575
 shader_parameter/top_edge_whiteness = 0.0170000008075
 shader_parameter/side_opacity = 0.010000000475
 shader_parameter/top_opacity = 0.0
+shader_parameter/bottom_fade_height = 0.45
+shader_parameter/bottom_fade_softness = 0.2
 shader_parameter/beat_strength = 0.0
 shader_parameter/alpha_fade = 1.0
 

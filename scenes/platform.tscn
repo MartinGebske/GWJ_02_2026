@@ -1,12 +1,15 @@
-[gd_scene load_steps=5 format=3 uid="uid://4t8bplry4qev"]
+[gd_scene load_steps=6 format=3 uid="uid://4t8bplry4qev"]
 
 [ext_resource type="Shader" uid="uid://dvorwmx7p2j2o" path="res://shaders/hologram.gdshader" id="1_ba0x2"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_iyx0m"]
 size = Vector3(10, 2, 10)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_507ja"]
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_nlgqw"]
 render_priority = 0
+next_pass = SubResource("ShaderMaterial_507ja")
 shader = ExtResource("1_ba0x2")
 shader_parameter/color = Color(0.049194515, 0.5126597, 0.7358819, 1)
 shader_parameter/emission_strength = 4.5
@@ -16,6 +19,8 @@ shader_parameter/edge_intensity = 6.0
 shader_parameter/top_edge_whiteness = 0.9
 shader_parameter/side_opacity = 0.8
 shader_parameter/top_opacity = 1.0
+shader_parameter/bottom_fade_height = 0.45
+shader_parameter/bottom_fade_softness = 0.2
 shader_parameter/beat_strength = 0.0
 shader_parameter/alpha_fade = 1.0
 

@@ -7,14 +7,12 @@ extends CharacterBody3D
 const SPEED = 5.0
 const JUMP_VELOCITY = 10.0
 
-
 var _look := Vector2.ZERO
 var respawn_position: Vector3 = Vector3.ZERO
 var is_movement_blocked: bool = false
 var movement_block_timer: float = 0.5
 var current_block_time: float = 0.0
 var touched_first_bar = false
-
 var is_on_bar = false
 
 @onready var horizontal_pivot: Node3D = $HorizontalPivot
@@ -28,6 +26,7 @@ func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	respawn_position = position
 	deadzone.player_fell.connect(_on_respawn)
+
 
 func _physics_process(delta: float) -> void:
 	frame_camera_rotation()
@@ -51,13 +50,11 @@ func _physics_process(delta: float) -> void:
 			is_movement_blocked = false
 		return
 
-	# Add the gravity.
 	if not is_on_floor():
-		velocity += (get_gravity() * 2.0) * delta
+		velocity += get_gravity() * 2.0 * delta
 	else:
 		floor_snap_length = 0.5
 
-	# Handle jump.
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
 		is_on_bar = false
 		floor_snap_length = 0.0
@@ -76,9 +73,8 @@ func _physics_process(delta: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		if event is InputEventMouseMotion:
-			_look += -event.relative * mouse_sensitivity
+	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED and event is InputEventMouseMotion:
+		_look += -event.relative * mouse_sensitivity
 
 func get_movement_direction() -> Vector3:
 	var input_dir := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
@@ -88,11 +84,9 @@ func get_movement_direction() -> Vector3:
 func frame_camera_rotation() -> void:
 	horizontal_pivot.rotate_y(_look.x)
 	vertical_pivot.rotate_x(_look.y)
-
 	vertical_pivot.rotation.x = clampf(vertical_pivot.rotation.x,
 										deg_to_rad(min_boundary),
-										deg_to_rad(max_boundary)
-										)
+										deg_to_rad(max_boundary))
 	_look = Vector2.ZERO
 
 func _on_respawn() -> void:
@@ -100,4 +94,8 @@ func _on_respawn() -> void:
 	velocity = Vector3.ZERO
 	is_movement_blocked = true
 	current_block_time = movement_block_timer
+	touched_first_bar = false
+	LevelManager.reset_run()
+
+func reset_touched_first_bar() -> void:
 	touched_first_bar = false

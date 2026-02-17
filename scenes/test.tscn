@@ -1,7 +1,9 @@
-[gd_scene load_steps=18 format=3 uid="uid://y2avlqtgpfmq"]
+[gd_scene load_steps=20 format=3 uid="uid://y2avlqtgpfmq"]
 
+[ext_resource type="PackedScene" uid="uid://lfyqbwdjie1v" path="res://scenes/level_manager.tscn" id="1_7mbro"]
 [ext_resource type="AudioStream" uid="uid://cbtvrk3xgdvw0" path="res://music/22-Electronic-Bliss-FULL-SM454.mp3" id="1_lpvoh"]
 [ext_resource type="PackedScene" uid="uid://13mopqa4f0hq" path="res://scenes/spectrum.tscn" id="2_bl13t"]
+[ext_resource type="PackedScene" uid="uid://dygajktxyfmcx" path="res://scenes/goal.tscn" id="3_7mbro"]
 [ext_resource type="PackedScene" uid="uid://4t8bplry4qev" path="res://scenes/platform.tscn" id="3_ajshl"]
 [ext_resource type="PackedScene" uid="uid://c6uu5dw7ulf0p" path="res://scenes/player.tscn" id="3_iyx0m"]
 [ext_resource type="PackedScene" uid="uid://jtas3rrtanmw" path="res://scenes/deadzone.tscn" id="4_lpvoh"]
@@ -49,6 +51,8 @@ center_offset = Vector3(960, 540, 0)
 
 [node name="Main" type="Node3D"]
 
+[node name="LevelManager" parent="." instance=ExtResource("1_7mbro")]
+
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
 shadow_enabled = true
@@ -56,9 +60,9 @@ shadow_enabled = true
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_74lek")
 
-[node name="Spectrum" parent="." instance=ExtResource("2_bl13t")]
+[node name="Spectrum" parent="." groups=["run_reset", "spectrum"] instance=ExtResource("2_bl13t")]
 fade_lerp_speed = 8.0
-goal_scene = ExtResource("3_ajshl")
+goal_scene = ExtResource("3_7mbro")
 
 [node name="Player" parent="." instance=ExtResource("3_iyx0m")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -7.6056614, 7.5262623, -2.115263)
@@ -69,28 +73,30 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.6799946, 5.438757, -1.9355
 [node name="Deadzone" parent="." instance=ExtResource("4_lpvoh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.78684, 7.572571, 0)
 
-[node name="ColorPalette" type="Node" parent="."]
+[node name="ColorPalette" type="Node" parent="." groups=["color_palette"]]
 script = ExtResource("6_lpvoh")
 palette_type = 2
 
-[node name="Music" type="Node" parent="."]
+[node name="Music" type="Node" parent="." groups=["music"]]
+unique_name_in_owner = true
 script = ExtResource("8_jcd4p")
 tracks = Array[AudioStream]([ExtResource("1_lpvoh"), ExtResource("8_ajshl"), ExtResource("9_ghpyy"), ExtResource("10_44saj")])
 
 [node name="RhythmNotifier" type="Node" parent="Music" node_paths=PackedStringArray("audio_stream_player")]
 script = ExtResource("7_at5dv")
-bpm = 130.0
-beat_length = 0.46153846153846156
+bpm = 129.99999999999997
+beat_length = 0.4615384615384616
 audio_stream_player = NodePath("../AudioStreamPlayer")
 metadata/_custom_type_script = "uid://dos3qhffr4v0a"
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Music"]
+unique_name_in_owner = true
 stream = ExtResource("1_lpvoh")
 autoplay = true
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="CRT_Scanlines" type="CanvasLayer" parent="."]
 
-[node name="MeshInstance2D" type="MeshInstance2D" parent="CanvasLayer"]
+[node name="Effect" type="MeshInstance2D" parent="CRT_Scanlines"]
 material = SubResource("ShaderMaterial_44saj")
 mesh = SubResource("QuadMesh_7mbro")
 
