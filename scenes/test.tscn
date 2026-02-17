@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://y2avlqtgpfmq"]
+[gd_scene load_steps=18 format=3 uid="uid://y2avlqtgpfmq"]
 
 [ext_resource type="AudioStream" uid="uid://cbtvrk3xgdvw0" path="res://music/22-Electronic-Bliss-FULL-SM454.mp3" id="1_lpvoh"]
 [ext_resource type="PackedScene" uid="uid://13mopqa4f0hq" path="res://scenes/spectrum.tscn" id="2_bl13t"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://dysjw7o844sko" path="res://scripts/rhythm.gd" id="8_jcd4p"]
 [ext_resource type="AudioStream" uid="uid://d0jkuqqors2i7" path="res://music/Metal-Death-ORJ014301.mp3" id="9_ghpyy"]
 [ext_resource type="AudioStream" uid="uid://dxx0tkolq8rii" path="res://music/Upswing-DNT012901.mp3" id="10_44saj"]
+[ext_resource type="Shader" uid="uid://b36js7sutwcqv" path="res://shaders/crt_scanlines.gdshader" id="12_ghpyy"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_bl13t"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -36,6 +37,15 @@ glow_map_strength = 0.51
 fog_light_color = Color(0, 0, 0, 1)
 volumetric_fog_density = 0.193
 volumetric_fog_albedo = Color(0.00184107, 0.0018410678, 0.0018410678, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_44saj"]
+shader = ExtResource("12_ghpyy")
+shader_parameter/blur = 0.1
+shader_parameter/vignette_multiplier = 1.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_7mbro"]
+size = Vector2(1920, 1080)
+center_offset = Vector3(960, 540, 0)
 
 [node name="Main" type="Node3D"]
 
@@ -77,6 +87,12 @@ metadata/_custom_type_script = "uid://dos3qhffr4v0a"
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Music"]
 stream = ExtResource("1_lpvoh")
 autoplay = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="CanvasLayer"]
+material = SubResource("ShaderMaterial_44saj")
+mesh = SubResource("QuadMesh_7mbro")
 
 [connection signal="game_start" from="Player" to="Spectrum" method="_on_player_game_start"]
 [connection signal="player_fell" from="Deadzone" to="Spectrum" method="_on_deadzone_player_fell"]
